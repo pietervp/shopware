@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+use Shopware\Core\Framework\Adapter\Twig\SwTwigFunction;
 
 return [
     'filePatterns' => [
@@ -58,5 +59,17 @@ return [
 
         // Return type is still of type "self" but more specific. Could never be something different from the InvalidSortQueryException, so this should be fine
         'CHANGED: The return type of Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\DataAbstractionLayerException.* changed from self to (?:the non-covariant )?Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Exception\\\\InvalidSortQueryException',
+
+        /** Internal annotation on {@see SwTwigFunction} was not recognized correctly */
+        preg_quote('CHANGED: Shopware\Core\Framework\Adapter\Twig\SwTwigFunction was marked "@internal"', '/'),
+        preg_quote('ADDED: Parameter escaperRuntime was added to Method escapeFilter() of class Shopware\Core\Framework\Adapter\Twig\SwTwigFunction', '/'),
+        preg_quote('CHANGED: The return type of Shopware\Core\Framework\Adapter\Twig\SwTwigFunction::escapeFilter() changed from no type to string|Twig\Markup', '/'),
+        preg_quote('CHANGED: The parameter $env of Shopware\Core\Framework\Adapter\Twig\SwTwigFunction::escapeFilter() changed from Twig\Environment to a non-contravariant Twig\Runtime\EscaperRuntime', '/'),
+        preg_quote('CHANGED: The parameter $charset of Shopware\Core\Framework\Adapter\Twig\SwTwigFunction::escapeFilter() changed from no type to a non-contravariant string|null', '/'),
+        preg_quote('CHANGED: The parameter $autoescape of Shopware\Core\Framework\Adapter\Twig\SwTwigFunction::escapeFilter() changed from no type to a non-contravariant bool', '/'),
+        preg_quote('CHANGED: The parameter $env of Shopware\Core\Framework\Adapter\Twig\SwTwigFunction::escapeFilter() changed from Twig\Environment to Twig\Runtime\EscaperRuntime', '/'),
+        preg_quote('CHANGED: The parameter $charset of Shopware\Core\Framework\Adapter\Twig\SwTwigFunction::escapeFilter() changed from no type to string|null', '/'),
+        preg_quote('CHANGED: The parameter $autoescape of Shopware\Core\Framework\Adapter\Twig\SwTwigFunction::escapeFilter() changed from no type to bool', '/'),
+        preg_quote('CHANGED: Parameter 0 of Shopware\Core\Framework\Adapter\Twig\SwTwigFunction::escapeFilter() changed name from env to escaperRuntime', '/'),
     ],
 ];
