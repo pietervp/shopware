@@ -118,6 +118,10 @@ export default {
         },
 
         showModeSetting(state) {
+            if (state.loading.product) {
+                return false;
+            }
+
             if (state.product?.parentId) {
                 return true;
             }
