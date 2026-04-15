@@ -31,6 +31,7 @@ use Shopware\Core\Framework\App\Lifecycle\Registration\AppRegistrationService;
 use Shopware\Core\Framework\App\Manifest\Manifest;
 use Shopware\Core\Framework\App\Mcp\Mcp;
 use Shopware\Core\Framework\App\Source\SourceResolver;
+use Shopware\Core\Framework\App\Validation\AppRequirementsValidator;
 use Shopware\Core\Framework\App\Validation\ConfigValidator;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -93,6 +94,7 @@ class AppLifecycle extends AbstractAppLifecycle
         private readonly McpPromptPersister $mcpPromptPersister,
         private readonly McpResourcePersister $mcpResourcePersister,
         private readonly DeletedAppsGateway $deletedAppsGateway,
+        private readonly AppRequirementsValidator $requirementsValidator,
     ) {
     }
 
@@ -104,6 +106,7 @@ class AppLifecycle extends AbstractAppLifecycle
     public function install(Manifest $manifest, AppInstallParameters $parameters, Context $context): void
     {
         $this->ensureIsCompatible($manifest);
+        $this->ensureMeetsRequirements($manifest);
 
         $app = $this->loadAppByName($manifest->getMetadata()->getName(), $context);
         if ($app) {
@@ -141,6 +144,7 @@ class AppLifecycle extends AbstractAppLifecycle
     public function update(Manifest $manifest, AppUpdateParameters $parameters, array $app, Context $context): void
     {
         $this->ensureIsCompatible($manifest);
+        $this->ensureMeetsRequirements($manifest);
 
         $defaultLocale = $this->getDefaultLocale($context);
         $metadata = $manifest->getMetadata()->toArray($defaultLocale);
@@ -649,6 +653,14 @@ class AppLifecycle extends AbstractAppLifecycle
 
         if ($usedFeatures !== []) {
             throw AppException::appSecretRequiredForFeatures($app->getName(), $usedFeatures);
+        }
+    }
+
+    private function ensureMeetsRequirements(Manifest $manifest): void
+    {
+        $violations = $this->requirementsValidator->validate($manifest);
+        if (\count($violations) > 0) {
+            throw AppException::requirementsNotMet(...$violations);
         }
     }
 }
